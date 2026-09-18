@@ -1,0 +1,56 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        instance-id: ${spring.application.name}:${random.value}
+        health-check-path: /actuator/health
+        prefer-ip-address: true
+    gateway:
+      discovery:
+        locator:
+          enabled: false   # on définit les routes explicitement ci-dessous
+      routes:
+        - id: customer-service
+          uri: lb://customer-service
+          predicates:
+            - Path=/api/customers/**
+          filters:
+            - RewritePath=/api/customers/(?<segment>.*), /customers/$\{segment}
+
+        - id: ebank-service
+          uri: lb://ebank-service
+          predicates:
+            - Path=/api/accounts/**
+          filters:
+            - RewritePath=/api/accounts/(?<segment>.*), /accounts/$\{segment}
+
+        - id: ebank-chatbot-service
+          uri: lb://ebank-chatbot-service
+          predicates:
+            - Path=/api/chat/**
+          filters:
+            - RewritePath=/api/chat/(?<segment>.*), /chat/$\{segment}
+
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+            allowedHeaders: "*"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway

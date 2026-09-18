@@ -1,0 +1,28 @@
+# Build
+target/
+*.class
+build/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Variables d'environnement / secrets — NE JAMAIS committer de clé API
+.env
+*.env
+
+# Logs
+*.log
+
+# Angular
+node_modules/
+dist/
+.angular/

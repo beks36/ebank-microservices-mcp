@@ -1,0 +1,39 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: ebank-chatbot-service
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        instance-id: ${spring.application.name}:${random.value}
+        health-check-path: /actuator/health
+        health-check-interval: 15s
+        prefer-ip-address: true
+  ai:
+    openai:
+      # Clé récupérée depuis la variable d'environnement OPENAI_API_KEY (voir README)
+      # NE JAMAIS écrire la clé en dur ici, surtout si le repo est public sur GitHub.
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-4o-mini
+          temperature: 0.3
+    mcp:
+      client:
+        type: SYNC
+        streamable-http:
+          connections:
+            customer-service:
+              url: http://localhost:8081
+            ebank-service:
+              url: http://localhost:8082
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
