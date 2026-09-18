@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ebank — Assistant</title>
+<style>
+  :root {
+    --ink: #12261e;
+    --paper: #f6f3ec;
+    --line: #d8d2c2;
+    --moss: #2f5d4f;
+    --moss-dark: #1f4137;
+    --coin: #c8a24a;
+    --bubble-user: #e7e1d1;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Iowan Old Style', 'Georgia', serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 560px;
+    background: #fffdf8;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    box-shadow: 0 1px 0 var(--line);
+    overflow: hidden;
+  }
+
+  header {
+    padding: 22px 26px 18px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  header .brand {
+    font-size: 22px;
+    letter-spacing: 0.01em;
+    font-weight: 600;
+    color: var(--moss-dark);
+  }
+
+  header .brand span {
+    color: var(--coin);
+  }
+
+  header .tag {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 11px;
+    color: #8a8375;
+  }
+
+  #log {
+    height: 380px;
+    overflow-y: auto;
+    padding: 22px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background:
+      repeating-linear-gradient(180deg, transparent, transparent 27px, rgba(0,0,0,0.02) 28px);
+  }
+
+  .msg {
+    max-width: 82%;
+    padding: 10px 14px;
+    border-radius: 3px;
+    line-height: 1.5;
+    font-size: 15px;
+    white-space: pre-wrap;
+  }
+
+  .msg.user {
+    align-self: flex-end;
+    background: var(--bubble-user);
+    border: 1px solid #cfc6ad;
+  }
+
+  .msg.bot {
+    align-self: flex-start;
+    background: #eef3ef;
+    border: 1px solid #cfe0d6;
+    color: var(--moss-dark);
+  }
+
+  .msg.system {
+    align-self: center;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px;
+    color: #a8503f;
+    background: none;
+    border: none;
+    padding: 2px 0;
+  }
+
+  form {
+    display: flex;
+    border-top: 1px solid var(--line);
+  }
+
+  #input {
+    flex: 1;
+    border: none;
+    padding: 16px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15px;
+    background: #fffdf8;
+    color: var(--ink);
+    outline: none;
+  }
+
+  #input::placeholder { color: #a39c8c; }
+
+  button {
+    border: none;
+    background: var(--moss);
+    color: #fdfaf3;
+    padding: 0 26px;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  button:hover { background: var(--moss-dark); }
+  button:disabled { background: #bcbcbc; cursor: default; }
+
+  .suggestions {
+    padding: 10px 26px 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .suggestions button.chip {
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--moss-dark);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+  }
+
+  .suggestions button.chip:hover {
+    background: var(--bubble-user);
+  }
+
+  #config {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 11px;
+    color: #a39c8c;
+    text-align: center;
+    padding: 10px 0 18px;
+  }
+  #config input {
+    font-family: inherit;
+    font-size: 11px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 3px 6px;
+    width: 220px;
+    color: var(--ink);
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <header>
+      <div class="brand">Ebank<span>·</span>Assistant</div>
+      <div class="tag">agent IA · MCP</div>
+    </header>
+
+    <div id="log">
+      <div class="msg system">Connecté à l'agent Ebank. Posez une question sur un client ou un compte.</div>
+    </div>
+
+    <div class="suggestions">
+      <button class="chip" type="button" data-q="Quel est le solde du compte 1 ?">Solde du compte 1</button>
+      <button class="chip" type="button" data-q="Qui est le client 1 ?">Infos client 1</button>
+      <button class="chip" type="button" data-q="Fais un depot de 500 sur le compte 1">Déposer 500</button>
+      <button class="chip" type="button" data-q="Quels sont les comptes du client 1 ?">Comptes du client 1</button>
+    </div>
+
+    <form id="form">
+      <input id="input" type="text" placeholder="Écrivez votre question…" autocomplete="off" />
+      <button id="send" type="submit">Envoyer</button>
+    </form>
+
+    <div id="config">
+      Endpoint : <input id="endpoint" type="text" value="http://localhost:8083/chat/ask" />
+    </div>
+  </div>
+
+<script>
+  const log = document.getElementById('log');
+  const form = document.getElementById('form');
+  const input = document.getElementById('input');
+  const sendBtn = document.getElementById('send');
+  const endpointInput = document.getElementById('endpoint');
+
+  function addMessage(text, cls) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + cls;
+    div.textContent = text;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+    return div;
+  }
+
+  async function ask(message) {
+    addMessage(message, 'user');
+    const thinking = addMessage('…', 'bot');
+    sendBtn.disabled = true;
+
+    try {
+      const res = await fetch(endpointInput.value, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      thinking.textContent = data.reply || '(réponse vide)';
+    } catch (err) {
+      thinking.remove();
+      addMessage('Erreur de connexion : ' + err.message + ' — vérifiez que ebank-chatbot-service tourne bien sur le port 8083.', 'system');
+    } finally {
+      sendBtn.disabled = false;
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const val = input.value.trim();
+    if (!val) return;
+    input.value = '';
+    ask(val);
+  });
+
+  document.querySelectorAll('.chip').forEach((chip) => {
+    chip.addEventListener('click', () => ask(chip.dataset.q));
+  });
+</script>
+</body>
+</html>
