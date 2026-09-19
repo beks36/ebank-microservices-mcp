@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/customers")
 @AllArgsConstructor
-@CrossOrigin("*")
+
 public class CustomerController {
 
     private final CustomerRepository customerRepository;

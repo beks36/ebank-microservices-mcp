@@ -12,31 +12,32 @@ spring:
         instance-id: ${spring.application.name}:${random.value}
         health-check-path: /actuator/health
         prefer-ip-address: true
+        ip-address: 127.0.0.1
     gateway:
       discovery:
         locator:
-          enabled: false   # on définit les routes explicitement ci-dessous
+          enabled: false
       routes:
         - id: customer-service
           uri: lb://customer-service
           predicates:
             - Path=/api/customers/**
           filters:
-            - RewritePath=/api/customers/(?<segment>.*), /customers/$\{segment}
+            - StripPrefix=1
 
         - id: ebank-service
           uri: lb://ebank-service
           predicates:
             - Path=/api/accounts/**
           filters:
-            - RewritePath=/api/accounts/(?<segment>.*), /accounts/$\{segment}
+            - StripPrefix=1
 
         - id: ebank-chatbot-service
           uri: lb://ebank-chatbot-service
           predicates:
             - Path=/api/chat/**
           filters:
-            - RewritePath=/api/chat/(?<segment>.*), /chat/$\{segment}
+            - StripPrefix=1
 
       globalcors:
         cors-configurations:

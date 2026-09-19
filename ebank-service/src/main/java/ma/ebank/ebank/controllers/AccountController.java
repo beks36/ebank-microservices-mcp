@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/accounts")
 @AllArgsConstructor
-@CrossOrigin("*")
+
 public class AccountController {
 
     private final AccountRepository accountRepository;

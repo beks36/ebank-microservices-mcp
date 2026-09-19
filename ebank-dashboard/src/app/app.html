@@ -1,0 +1,37 @@
+<div class="page">
+  <header>
+    <h1>{{ title() }}</h1>
+    <a href="chatbot.html" target="_blank" class="chat-link">Ouvrir l'assistant IA →</a>
+  </header>
+
+  @if (loading()) {
+    <p class="status">Chargement des comptes…</p>
+  }
+
+  @if (error()) {
+    <p class="status error">{{ error() }}</p>
+  }
+
+  @if (!loading() && !error()) {
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>RIB</th>
+          <th>Solde</th>
+          <th>Client ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (account of accounts(); track account.id) {
+          <tr>
+            <td>{{ account.id }}</td>
+            <td>{{ account.rib }}</td>
+            <td>{{ account.balance | number:'1.2-2' }} €</td>
+            <td>{{ account.customerId }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
