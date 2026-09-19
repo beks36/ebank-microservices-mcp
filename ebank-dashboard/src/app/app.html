@@ -4,8 +4,21 @@
     <a href="chatbot.html" target="_blank" class="chat-link">Ouvrir l'assistant IA →</a>
   </header>
 
+  <nav class="tabs">
+    <button
+      [class.active]="activeTab() === 'accounts'"
+      (click)="showTab('accounts')">
+      Comptes
+    </button>
+    <button
+      [class.active]="activeTab() === 'customers'"
+      (click)="showTab('customers')">
+      Clients
+    </button>
+  </nav>
+
   @if (loading()) {
-    <p class="status">Chargement des comptes…</p>
+    <p class="status">Chargement…</p>
   }
 
   @if (error()) {
@@ -13,25 +26,50 @@
   }
 
   @if (!loading() && !error()) {
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>RIB</th>
-          <th>Solde</th>
-          <th>Client ID</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (account of accounts(); track account.id) {
+    @if (activeTab() === 'accounts') {
+      <table>
+        <thead>
           <tr>
-            <td>{{ account.id }}</td>
-            <td>{{ account.rib }}</td>
-            <td>{{ account.balance | number:'1.2-2' }} €</td>
-            <td>{{ account.customerId }}</td>
+            <th>ID</th>
+            <th>RIB</th>
+            <th>Solde</th>
+            <th>Client ID</th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (account of accounts(); track account.id) {
+            <tr>
+              <td>{{ account.id }}</td>
+              <td>{{ account.rib }}</td>
+              <td>{{ account.balance | number:'1.2-2' }} €</td>
+              <td>{{ account.customerId }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+    @if (activeTab() === 'customers') {
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (customer of customers(); track customer.id) {
+            <tr>
+              <td>{{ customer.id }}</td>
+              <td>{{ customer.name }}</td>
+              <td>{{ customer.email }}</td>
+              <td>{{ customer.phone }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
   }
 </div>
